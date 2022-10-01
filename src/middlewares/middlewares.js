@@ -43,3 +43,11 @@ async function ValidaschemaAddGames(req, res, next) {
 }
 
 export {ValidaCategories, ValidaschemaAddGames}
+
+// links uteis
+
+// https://stackoverflow.com/questions/20083807/javascript-date-to-sql-date-object
+
+// https://day.js.org/docs/en/parse/string
+
+// https://day.js.org/docs/en/parse/string-format
