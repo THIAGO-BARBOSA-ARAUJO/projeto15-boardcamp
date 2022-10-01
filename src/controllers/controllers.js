@@ -55,6 +55,26 @@ const addGames = async (req, res) => {
     }
 }
 
+const getGames = async (req, res) =>{
+    const filter = req.query.name
+    console.log(filter)
+    if(filter){
+        const games = await connection.query(`SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id WHERE games.name ~* '${filter}';`)
+
+        res.status(200).send(games.rows)
+    }else{
+        
+        const games = await connection.query(`SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id;`)
+    
+        res.status(200).send(games.rows)
+
+    }
+
+    
+}
+
+//SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id WHERE games.name ~* 'ba';
+
 //SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id; -> query para trazer as linhas do get /games
 
-export {status, addCategories, getCategories, addGames}
+export {status, addCategories, getCategories, addGames, getGames}
