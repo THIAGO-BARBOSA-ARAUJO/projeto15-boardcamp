@@ -1,6 +1,6 @@
 import express from "express"
-import { status, addCategories, getCategories, addGames, getGames } from "../controllers/controllers.js"
-import { ValidaCategories, ValidaschemaAddGames } from "../middlewares/middlewares.js"
+import { status, addCategories, getCategories, addGames, getGames, addCustomers, getCustomers, getCustomersId, updateCustomers } from "../controllers/controllers.js"
+import { ValidaCategories, ValidaschemaAddGames, ValidaschemaAddCustomers } from "../middlewares/middlewares.js"
 
 const router = express.Router()
 
@@ -10,9 +10,16 @@ router.post("/categories", ValidaCategories, addCategories) // adiciona categori
 
 router.get("/categories", getCategories) // busca categorias
 
-router.post("/games",ValidaschemaAddGames, addGames) // adiciona games
+router.post("/games",ValidaschemaAddGames, addGames) // adiciona game
 
 router.get("/games", getGames) // Busca games
 
+router.post("/customers", ValidaschemaAddCustomers, addCustomers) // adiciona cliente
+
+router.get("/customers", getCustomers) // busca clientes
+
+router.get("/customers/:id", getCustomersId) // busca clientes por id
+
+router.put("/customers/:id", ValidaschemaAddCustomers, updateCustomers) // atualiza clientes por id
 
 export default router

@@ -1,10 +1,5 @@
 import joi from "joi"
 
-const schemaCategories = joi.object({
-    name: joi.string()
-    .empty()
-    .required(),
-}).options({ abortEarly: false })
 
 const schemaAddGames = joi.object({
     name: joi.string()
@@ -18,7 +13,29 @@ const schemaAddGames = joi.object({
     .required()
 }).options({ abortEarly: false })
 
+const schemaCategories = joi.object({
+  name: joi.string()
+  .empty()
+  .required(),
+}).options({ abortEarly: false })
 
+const schemaCustomers = joi.object({
+  name: joi.string()
+  .empty(),
+
+  phone: joi.string()
+  .min(10)
+  .max(11),
+
+  cpf: joi.string()
+  .min(11)
+  .max(11)
+  .pattern(/^[0-9]+$/, 'numbers'),
+
+  birthday: joi.date()
+  .iso()
+  .max('now')
+}).options({ abortEarly: false })
 
 async function ValidaCategories(req, res, next) {
   const {name} = req.body
@@ -42,7 +59,20 @@ async function ValidaschemaAddGames(req, res, next) {
   next()
 }
 
-export {ValidaCategories, ValidaschemaAddGames}
+async function ValidaschemaAddCustomers(req, res, next) {
+  
+  
+	const validation = schemaCustomers.validate(req.body);
+
+  if (validation.error) {
+    return res.sendStatus(400);
+  }
+  next()
+}
+
+
+
+export {ValidaCategories, ValidaschemaAddGames, schemaCustomers, ValidaschemaAddCustomers}
 
 // links uteis
 
