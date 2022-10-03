@@ -1,5 +1,5 @@
 import express from "express"
-import { status, addCategories, getCategories, addGames, getGames, addCustomers, getCustomers, getCustomersId, updateCustomers } from "../controllers/controllers.js"
+import { status, addCategories, getCategories, addGames, getGames, addCustomers, getCustomers, getCustomersId, updateCustomers, addRentals, getRentals } from "../controllers/controllers.js"
 import { ValidaCategories, ValidaschemaAddGames, ValidaschemaAddCustomers } from "../middlewares/middlewares.js"
 
 const router = express.Router()
@@ -21,5 +21,9 @@ router.get("/customers", getCustomers) // busca clientes
 router.get("/customers/:id", getCustomersId) // busca clientes por id
 
 router.put("/customers/:id", ValidaschemaAddCustomers, updateCustomers) // atualiza clientes por id
+
+router.post("/rentals", addRentals) // adciciona um aluguel
+
+router.get("/rentals", getRentals) //busca um aluguel
 
 export default router

@@ -1,5 +1,5 @@
 import connection from "../databases/db.js"
-
+import dayjs from "dayjs"
 
 const status = async (req, res) => {
     res.sendStatus(200)
@@ -157,8 +157,54 @@ const updateCustomers = async (req, res) => {
     }
 }
 
+const addRentals = async (req, res) => {
+    const {customerId, gameId, daysRented} = req.body
+
+    const rentDate = dayjs()
+
+    const returnDate = null
+
+    const delayFee = null
+
+    if(daysRented <= 0){
+        return res.sendStatus(400)
+    }
+
+    const {rows: [ game ]} = await connection.query(`SELECT * FROM games WHERE id = ${gameId};`)
+
+    const originalPrice = daysRented * game.pricePerDay
+
+    const existCliente = await connection.query(`SELECT * FROM customers WHERE id = ${customerId};`)
+
+    console.log(existCliente)
+    console.log(game)
+    if(existCliente.rows.length <= 0 || !game){
+        return res.sendStatus(400)
+    }
+
+    const quantAlug = await connection.query(`SELECT * FROM rentals WHERE id = ${gameId};`)
+
+    if(quantAlug.rows.length >= game.stockTotal){
+        return res.sendStatus(400)
+    }
+
+    await connection.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee") VALUES ($1, $2, $3, $4, $5, $6, $7);`, [customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee])
+
+    res.sendStatus(201)
+}
+
+const getRentals = async (req, res) => {
+
+    const resp = await connection.query(`SELECT rentals.*, customers.name as "customerName", games."categoryId", games.name as "gameName", categories.name as "categoryName" FROM rentals
+    JOIN customers ON rentals."customerId"=customers.id
+    JOIN games ON rentals."gameId"=games.id 
+    JOIN categories ON games."categoryId"=categories.id;`)
+
+    res.status(200).send(resp.rows)
+}
+
 //SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id WHERE games.name ~* 'ba';
 
 //SELECT games.*, categories.name as "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id; -> query para trazer as linhas do get /games
 
-export {status, addCategories, getCategories, addGames, getGames, addCustomers, getCustomers, getCustomersId, updateCustomers}
+export {status, addCategories, getCategories, addGames, getGames, addCustomers, getCustomers, getCustomersId, updateCustomers, addRentals, getRentals}
